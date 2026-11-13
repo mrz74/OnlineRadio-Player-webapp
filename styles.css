@@ -1,0 +1,333 @@
+@font-face {
+  font-family: "Segment14";
+  src: url("fonts/Segment14.otf") format("opentype");
+  font-display: swap;
+}
+
+:root {
+  --col-bg: #2b2b2c;
+  --col-header-bg: #e8791a;
+  --col-header-fg: #ffffff;
+  --col-display-bg: #0d0d0d;
+  --col-name-fg: #f2f2f2;
+  --col-status-fg: #e05a2b;
+  --col-btn-bg: #4a4a4c;
+  --col-btn-active: #5c5c5e;
+  --col-list-bg: #0d0d0d;
+  --col-list-bg-alt: #262626;
+  --col-list-fg: #ffffff;
+  --col-sel-bg: #f2a765;
+  --col-sel-fg: #000000;
+  --col-entry-bg: #1c1c1d;
+  --display-font: "Segment14", "Consolas", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--col-bg);
+  color: var(--col-list-fg);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.header {
+  background: var(--col-header-bg);
+  color: var(--col-header-fg);
+  font-size: 18px;
+  font-weight: bold;
+  padding: 14px 16px;
+  padding-top: max(14px, env(safe-area-inset-top));
+}
+
+/* Kijelző - régi kvarc kijelző/számológép-stílus: egy világosabb
+   "műanyag" keret (bezel) körbeveszi a mélyített, sötét "üveg" panelt. */
+.display-bezel {
+  background: var(--col-btn-bg);
+  margin: 12px 12px 8px;
+  border-radius: 8px;
+  padding: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 4px rgba(0,0,0,0.3);
+}
+.display {
+  background: var(--col-display-bg);
+  border-radius: 6px;
+  padding: 10px 12px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+}
+.display .name {
+  font-family: var(--display-font);
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--col-name-fg);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.display .status {
+  font-family: var(--display-font);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--col-status-fg);
+}
+.display .meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  min-height: 16px;
+}
+.display .live-indicator {
+  font-family: var(--display-font);
+  font-size: 11px;
+  color: var(--col-status-fg);
+  letter-spacing: 1px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.display .live-indicator.on { opacity: 1; }
+
+/* Dekoratív VU-mérő - csak vizuális effekt, nem mér semmit */
+.vu-meter {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.vu-meter .bar {
+  width: 5px;
+  height: 2px;
+  background: var(--col-header-bg);
+  border-radius: 1px;
+  transition: height 0.12s ease-out;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px 10px;
+}
+
+.btn {
+  background: var(--col-btn-bg);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn:active { background: var(--col-btn-active); }
+
+.controls-bezel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--col-btn-bg);
+  border-radius: 6px;
+  padding: 6px 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+
+.btn-round {
+  width: 44px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 4px;
+}
+.btn-round svg {
+  width: 18px;
+  height: 18px;
+  fill: white;
+}
+
+.btn-active {
+  background: var(--col-sel-bg) !important;
+  color: black !important;
+}
+
+.volume-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.volume-wrap input[type="range"] {
+  flex: 1;
+  accent-color: var(--col-header-bg);
+}
+.volume-pct {
+  width: 42px;
+  text-align: right;
+  font-size: 13px;
+  font-family: var(--display-font);
+}
+
+.toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 8px;
+}
+.toolbar input[type="text"] {
+  flex: 1;
+  background: var(--col-entry-bg);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+.toolbar input[type="text"]::placeholder { color: #888; }
+
+.list-wrap {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0 12px 12px;
+  border-radius: 6px;
+}
+
+.station-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.station-table thead th {
+  background: var(--col-btn-bg);
+  color: white;
+  text-align: left;
+  padding: 8px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  cursor: pointer;
+  user-select: none;
+}
+.col-fav { width: 30px; cursor: default !important; }
+.col-actions { width: 34px; cursor: default !important; }
+.arrow { font-size: 10px; opacity: 0.8; }
+
+.station-table tbody tr {
+  background: var(--col-list-bg);
+}
+.station-table tbody tr:nth-child(even) {
+  background: var(--col-list-bg-alt);
+}
+.station-table tbody tr.selected {
+  background: var(--col-sel-bg) !important;
+  color: var(--col-sel-fg) !important;
+}
+.station-table td {
+  padding: 9px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.fav-star {
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--col-sel-bg);
+}
+.row-menu-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+/* Dialógus */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+.overlay.hidden { display: none; }
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 340px;
+}
+.dialog h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+.dialog label {
+  display: block;
+  font-size: 13px;
+  margin: 10px 0 4px;
+}
+.dialog input[type="text"] {
+  width: 100%;
+  background: var(--col-entry-bg);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+.dialog-error {
+  color: #c0392b; /* hibaszín, szándékosan fix piros */
+  font-size: 12px;
+  min-height: 16px;
+  margin-top: 8px;
+}
+.dialog-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Kis kontextus-menü (szerkesztés/törlés) */
+.ctx-menu {
+  position: fixed;
+  background: var(--col-btn-bg);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 60;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  min-width: 180px;
+}
+.ctx-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.ctx-menu button:active { background: var(--col-btn-active); }
+.ctx-menu hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 0;
+}
