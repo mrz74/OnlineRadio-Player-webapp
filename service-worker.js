@@ -1,4 +1,4 @@
-const CACHE_NAME = "radio-player-shell-v6";
+const CACHE_NAME = "radio-player-shell-v7";
 const SHELL_FILES = [
   "./",
   "./index.html",
@@ -7,7 +7,8 @@ const SHELL_FILES = [
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./fonts/Segment14.otf",
+  "./fonts/ChakraPetch-Regular.ttf",
+  "./fonts/ChakraPetch-Bold.ttf",
 ];
 
 self.addEventListener("install", (event) => {

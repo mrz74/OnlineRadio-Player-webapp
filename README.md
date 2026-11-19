@@ -14,8 +14,8 @@ tenni valahova, ahonnan a telefon eléri.
   növekvő várakozással), a stream végét jelző `ended` eseményt is kezeli
 - Lejátszás/szünet/leállítás megbízható, vektoros (SVG) ikonokkal - nem
   betűtípus-glifával, így minden eszközön egyformán jelenik meg
-- Régi kvarc kijelző stílus: a `Segment14` betűtípus `@font-face`-fel
-  beágyazva, mélyített "üveg" panelen, dekoratív animált VU-mérővel és
+- Régi kvarc kijelző stílus: a `Chakra Petch` betűtípus (teljes magyar
+  ékezetkészlet) `@font-face`-fel beágyazva, mélyített "üveg" panelen, dekoratív animált VU-mérővel és
   "ÉLŐ ADÁS" jelzéssel lejátszás közben
 - Zárolt képernyő / értesítési sáv vezérlők (Media Session API):
   lejátszás/szünet/leállítás/előző/következő csatorna
