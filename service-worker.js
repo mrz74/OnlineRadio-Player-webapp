@@ -1,4 +1,4 @@
-const CACHE_NAME = "radio-player-shell-v7";
+const CACHE_NAME = "radio-player-shell-v8";
 const SHELL_FILES = [
   "./",
   "./index.html",

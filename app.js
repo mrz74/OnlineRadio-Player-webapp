@@ -688,6 +688,96 @@ function importDataFromFile(file) {
   reader.readAsText(file);
 }
 
+/* ---------- Állomáslista frissítése a radio-browser.info
+   közösségi adatbázisból: csak az ÚJ csatornákat adja hozzá, a
+   meglévőket (és a kedvenceket) nem módosítja. ---------- */
+
+const RADIO_BROWSER_SERVERS = [
+  "https://de1.api.radio-browser.info",
+  "https://de2.api.radio-browser.info",
+  "https://nl1.api.radio-browser.info",
+  "https://at1.api.radio-browser.info",
+];
+
+async function fetchHungarianStations(limit = 500) {
+  const query = new URLSearchParams({
+    country: "Hungary",
+    order: "clickcount",
+    reverse: "true",
+    limit: String(limit),
+    hidebroken: "true",
+  });
+  let lastError = null;
+  for (const base of RADIO_BROWSER_SERVERS) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 15000);
+    try {
+      const resp = await fetch(`${base}/json/stations/search?${query}`, { signal: ctrl.signal });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      return data
+        .map((st) => ({
+          name: (st.name || "").trim(),
+          url: (st.url_resolved || st.url || "").trim(),
+          genre: ((st.tags || "").split(",")[0] || "").trim(),
+        }))
+        .filter((st) => st.name && /^https?:\/\//i.test(st.url));
+    } catch (err) {
+      lastError = err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  throw new Error(`Egyik szerver sem érhető el (${lastError && lastError.message}).`);
+}
+
+function normUrl(url) {
+  return url.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "");
+}
+
+function findNewStations(existing, fetched) {
+  const knownUrls = new Set(existing.map((s) => normUrl(s.url)));
+  const knownNames = new Set(existing.map((s) => s.name.trim().toLowerCase()));
+  const result = [];
+  for (const st of fetched) {
+    const nu = normUrl(st.url);
+    const nn = st.name.trim().toLowerCase();
+    if (knownUrls.has(nu) || knownNames.has(nn)) continue;
+    knownUrls.add(nu);
+    knownNames.add(nn);
+    result.push(st);
+  }
+  return result;
+}
+
+async function updateStationList() {
+  let fetched;
+  try {
+    fetched = await fetchHungarianStations();
+  } catch (err) {
+    alert(`Nem sikerült a letöltés:\n${err.message}`);
+    return;
+  }
+  // HTTPS oldalról a böngésző nem játszik le sima http:// streamet
+  // (kevert tartalom), ezért ilyenkor csak a https címűeket ajánljuk.
+  const httpsOnly = location.protocol === "https:";
+  if (httpsOnly) fetched = fetched.filter((st) => /^https:/i.test(st.url));
+
+  const fresh = findNewStations(stations, fetched);
+  if (fresh.length === 0) {
+    alert("Nincs új csatorna, a listád naprakész.");
+    return;
+  }
+  const note = httpsOnly ? "\n(Csak a https címen elérhetők, mert az oldal is https-en fut.)" : "";
+  if (!confirm(`${fresh.length} új csatorna található.${note}\n\nHozzáadod a listához? A meglévő csatornáid és a kedvenceid nem változnak.`)) {
+    return;
+  }
+  stations.push(...fresh);
+  saveStations();
+  applyFilters();
+  alert(`${fresh.length} új csatorna hozzáadva.`);
+}
+
 on(dataBtn, "click", (event) => {
   closeContextMenu();
   const menu = document.createElement("div");
@@ -707,12 +797,20 @@ on(dataBtn, "click", (event) => {
     importFileInput.click();
   });
 
+  const updateBtn = document.createElement("button");
+  updateBtn.textContent = "🌐 Állomáslista frissítése (új csatornák)";
+  updateBtn.addEventListener("click", () => {
+    closeContextMenu();
+    updateStationList();
+  });
+
+  menu.appendChild(updateBtn);
   menu.appendChild(exportBtn);
   menu.appendChild(importBtn);
   document.body.appendChild(menu);
 
   const rect = event.target.getBoundingClientRect();
-  const menuWidth = 260;
+  const menuWidth = 300;
   let left = rect.left;
   if (left + menuWidth > window.innerWidth) {
     left = window.innerWidth - menuWidth - 8;

@@ -25,6 +25,11 @@ tenni valahova, ahonnan a telefon eléri.
 - **Induláskor csak megjeleníti** az utoljára hallgatott csatornát, nem
   próbál automatikusan csatlakozni hozzá - a kapcsolódás csak akkor
   indul, ha ténylegesen megnyomod a lejátszás gombot
+- **Állomáslista frissítése** ("💾" gomb → "🌐 Állomáslista frissítése"):
+  letölti a magyar rádiók friss listáját a radio-browser.info közösségi
+  adatbázisból, és megerősítés után csak az **új** csatornákat adja
+  hozzá - a meglévők és a kedvencek nem változnak. https oldalról csak
+  https streamek kerülnek be (a böngésző a sima http-t nem játssza le)
 - **Adatok mentése/visszatöltése** ("💾" gomb): a kedvencek és a kézzel
   hozzáadott/szerkesztett csatornák egy `.json` fájlba menthetők, majd
   onnan visszatölthetők - hasznos, ha egy böngésző-adattörlés (pl.
